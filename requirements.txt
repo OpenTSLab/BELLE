@@ -1,0 +1,11 @@
+pip==24.0
+torch==2.8.0
+torchaudio==2.8.0
+wandb
+phonemizer==3.2.1
+lhotse
+smart_open
+smartopen
+silero-vad
+fairseq
+nemo_toolkit[asr]

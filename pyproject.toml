@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "belle"
+version = "0.0.0"
+authors = [{ name = "Ziyang Zhang"}]
+description = "The official implementation of Bayesian Speech synthesizers Can Learn from Multiple Teachers"
+readme = "README.md"
+
+[tool.setuptools]
+packages = ["belle"]

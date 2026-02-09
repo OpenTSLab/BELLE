@@ -1,0 +1,6 @@
+nemo_text_processing
+sox
+openai-whisper
+s3prl==0.4.17
+# omegaconf==2.0.6
+# fairseq==0.12.2
