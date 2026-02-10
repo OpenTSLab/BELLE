@@ -58,6 +58,33 @@ It creates a `conda` environment, installs dependencies, pulls `k2`, installs `i
 
 ---
 
+## 📥 Pretrained Weights (Vocoder + Evaluation Models)
+Please download the following pretrained weights and place them under the [pretrained](pretrained) directory as indicated:
+
+- **Vocoder (HiFi-GAN, LibriTTS):**
+  - Source: https://huggingface.co/mechanicalsea/speecht5-tts/tree/main/pretrained_vocoder/train_nodev_clean_libritts_hifigan.v1
+  - Target: [pretrained/tts-hifigan-train](pretrained/tts-hifigan-train)
+- **ASR (Conformer WER):**
+  - Source: https://huggingface.co/nvidia/stt_en_conformer_transducer_xlarge/tree/main
+  - Target: [pretrained/evaluation/stt_en_conformer_transducer_xlarge.nemo](pretrained/evaluation/stt_en_conformer_transducer_xlarge.nemo)
+- **ASR (HuBERT WER):**
+  - Source: https://huggingface.co/facebook/hubert-large-ls960-ft/tree/main
+  - Target: [pretrained/evaluation/hubert-large-ls960-ft](pretrained/evaluation/hubert-large-ls960-ft)
+- **Speaker Similarity (WavLM‑Uni):**
+  - Source: https://drive.google.com/file/d/1-aE1NfzpRCLxA4GUxX9ITI3F9LlbtEGP/view
+  - Target: [pretrained/evaluation/wavlm_large_finetune.pth](pretrained/evaluation/wavlm_large_finetune.pth)
+- **MOS (UTMOS):**
+  - Source: https://github.com/tarepan/SpeechMOS/releases/download/v1.0.0/utmos22_strong_step7459_v1.pt
+  - Target: [pretrained/evaluation/utmos22_strong_step7459_v1.pt](pretrained/evaluation/utmos22_strong_step7459_v1.pt)
+
+**Path configuration note:**
+If you place these files in a different location, update the paths in:
+- [belle/data/tokenizer.py](belle/data/tokenizer.py) (vocoder path)
+- [evaluate-zero-shot-tts/evaluate_new.py](evaluate-zero-shot-tts/evaluate_new.py) (ASR / SIM model paths)
+- [evaluate-zero-shot-tts/utmos/predict_speechmos.py](evaluate-zero-shot-tts/utmos/predict_speechmos.py) (MOS model path)
+
+---
+
 ## 🧪 Data Pipeline (LibriSpeech)
 First download LibriSpeech from the official page: **https://www.openslr.org/12** and extract it to:
 
@@ -104,6 +131,31 @@ This pipeline includes **inference + evaluation**, and supports metrics such as:
 - **MOS** (UTMOS)
 - **Similarity** (WavLM‑Uni: `sim_o`, `sim_r`)
 
+### 📦 Evaluation Data Download
+Download the evaluation dataset here:
+- https://drive.google.com/drive/folders/1TfYCUpccGNOBTnGCEN3qczavMiiFQjJV?usp=sharing
+
+Place it under the project root with the following structure (excerpt):
+
+```
+evaluate-zero-shot-tts/evalset
+  ├── librispeech-test-clean
+  │   ├── exp_aligned_pl3_r3
+  │   │   ├── {FILE_NAME}_wav_c_{TRIAL_ID}.txt
+  │   │   ├── {FILE_NAME}_wav_c_{TRIAL_ID}.wav
+  │   │   ├── {FILE_NAME}_wav_g.txt
+  │   │   ├── {FILE_NAME}_wav_g.wav
+  │   │   ├── {FILE_NAME}_wav_p_{TRIAL_ID}.txt
+  │   │   ├── {FILE_NAME}_wav_p_{TRIAL_ID}.wav
+  │   │   ├── {FILE_NAME}_wav_pg_{TRIAL_ID}.txt
+  │   │   ├── {FILE_NAME}_wav_pg_{TRIAL_ID}.wav
+  │   │   ...
+  │   └── exp_base_pl3_r3
+  │       ...
+```
+
+We made several modifications to the original repository [keonlee9420/evaluate-zero-shot-tts](https://github.com/keonlee9420/evaluate-zero-shot-tts) (e.g., adding Conformer‑based WER and UTMOS support) to better fit the BELLE evaluation pipeline. For full details, see [evaluate-zero-shot-tts/README.md](evaluate-zero-shot-tts/README.md).
+
 ---
 
 ## 📝 Citation
@@ -126,5 +178,5 @@ See [LICENSE](LICENSE).
 ---
 
 ## 🙏 Acknowledgements
-We heavily referenced the implementation from **[lifeiteng/vall-e](https://github.com/lifeiteng/vall-e)**.  
+We heavily referenced the implementation from **[lifeiteng/vall-e](https://github.com/lifeiteng/vall-e)** for the training framework and **[keonlee9420/evaluate-zero-shot-tts](https://github.com/keonlee9420/evaluate-zero-shot-tts)** for the evaluation framework.
 This project also builds upon **[icefall](https://github.com/k2-fsa/icefall)** and related open‑source speech toolkits.
