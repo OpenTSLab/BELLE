@@ -106,18 +106,18 @@ The end‑to‑end data pipeline is implemented in:
 ---
 
 ## 🚀 Training
-Training is driven by the scripts below (each script loads the matching settings file):
+Training is driven by the scripts below:
 
-- **BELLE:** [scripts/run_belle.sh](scripts/run_belle.sh) → [scripts/settings_belle.sh](scripts/settings_belle.sh)
-- **MELLE:** [scripts/run_melle.sh](scripts/run_melle.sh) → [scripts/settings_melle.sh](scripts/settings_melle.sh)
-- **BELLE‑stream:** [scripts/run_stream.sh](scripts/run_stream.sh) → [scripts/settings_stream.sh](scripts/settings_stream.sh)
+- **BELLE:** [scripts/run_belle.sh](scripts/run_belle.sh)
+- **MELLE:** [scripts/run_melle.sh](scripts/run_melle.sh)
+- **BELLE‑stream:** [scripts/run_stream.sh](scripts/run_stream.sh)
 
 All training scripts invoke [egs/librispeech/bin/trainer.py](egs/librispeech/bin/trainer.py) with distributed `torchrun`.
 
 **Typical workflow:**
 1. Run the data pipeline.
 2. Start training with the corresponding run script listed above.
-3. For BELLE‑stream, initialize from the last BELLE checkpoint and set `start_epoch=2`, `train_stage=2` (already reflected in [scripts/settings_stream.sh](scripts/settings_stream.sh)).
+3. For BELLE‑stream, initialize from the last BELLE checkpoint and set `start_epoch=2`, `train_stage=2` (already reflected in [scripts/run_stream.sh](scripts/run_stream.sh)).
 
 ---
 

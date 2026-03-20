@@ -51,4 +51,4 @@ python utils/filter_data.py
 python utils/process_librispeech_with_prompts.py \
     --input data/tokenized/vad_lt_14/cuts_train/filter_all.jsonl.gz
 
-# Step 10: Use data/tokenized/vad_lt_14/cuts_train/filter_all_with_prompts.jsonl.gz for BELLE-stream training. Use the last checkpoint of BELLE to initialize BELLE-stream. Specifically, you should copy the last checkpoint of BELLE to the directory of BELLE-stream, and rename it to epoch-1.pt, which will be automatically loaded when training BELLE-stream (set start_epoch=2 and train_stage=2, refer to scripts/settings_stream.sh for details).
+# Step 10: Use data/tokenized/vad_lt_14/cuts_train/filter_all_with_prompts.jsonl.gz for BELLE-stream training. Use the last checkpoint of BELLE to initialize BELLE-stream. Specifically, you should copy the last checkpoint of BELLE to the directory of BELLE-stream, and rename it to epoch-1.pt, which will be automatically loaded when training BELLE-stream (set start_epoch=2 and train_stage=2, refer to scripts/run_stream.sh for details).
