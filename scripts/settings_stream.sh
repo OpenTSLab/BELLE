@@ -6,7 +6,6 @@ num_epochs=10
 lr=5e-4
 clip=1.5
 scheduler=linear
-dataset=librispeech
 max_duration=60
 steps_per_epoch=7546
 ## mos

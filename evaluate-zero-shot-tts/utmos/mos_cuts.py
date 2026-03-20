@@ -3,7 +3,7 @@ import pathlib
 import tqdm
 from torch.utils.data import Dataset, DataLoader
 import torchaudio
-from utmos.speechmos import UTMOS22Strong
+from speechmos import UTMOS22Strong
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
