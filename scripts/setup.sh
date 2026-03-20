@@ -20,3 +20,4 @@ pip install -r evaluate-zero-shot-tts/requirements_evaluation.txt
 pip install -e belle/ParallelWaveGAN
 
 pip install scipy==1.10
+pip install "nemo_toolkit[asr]==2.5.0"
