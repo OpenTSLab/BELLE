@@ -31,7 +31,6 @@ def load_model(checkpoint, device):
 
     args = AttributeDict(checkpoint)
     model = get_model(args)
-    model_name = args.model_name.lower()
 
     missing_keys, unexpected_keys = model.load_state_dict(
         checkpoint["model"], strict=False
@@ -42,7 +41,7 @@ def load_model(checkpoint, device):
 
     text_tokens = args.text_tokens
 
-    return model, text_tokens, model_name
+    return model, text_tokens, args
 
 
 class MelleModel(nn.Module):
@@ -52,7 +51,7 @@ class MelleModel(nn.Module):
         self.device = torch.device("cpu")
         if torch.cuda.is_available():
             self.device = torch.device("cuda", local_rank)
-        self.model, self.text_tokens, self.model_name = load_model(ckpt, self.device)
+        self.model, self.text_tokens, self.args = load_model(ckpt, self.device)
         if backend == "espeak":
             self.text_tokens = os.path.join("../egs/", dataset_name, self.text_tokens)
         print('-' * 50)
@@ -70,7 +69,7 @@ class MelleModel(nn.Module):
 
     @torch.no_grad()
     def inference(self, text, audio_file, task_key, text_prompt=None):
-        if "belle_stream" in self.model_name:
+        if "stream_mode" in self.args and self.args.stream_mode:
             prompt_text_tokens, prompt_text_tokens_lens = self.text_collater(
                 [
                     tokenize_text(
@@ -99,7 +98,7 @@ class MelleModel(nn.Module):
         audio_recon = self.mel_recon(audio_prompt) # 1 T
 
         try:
-            if "belle_stream" in self.model_name:
+            if "stream_mode" in self.args and self.args.stream_mode:
                 encoded_frames, std = self.model.inference(
                     text_tokens.to(self.device),
                     text_tokens_lens.to(self.device),
@@ -114,21 +113,10 @@ class MelleModel(nn.Module):
                     audio_prompt,
                 ) # 1 T C
             
-            if isinstance(encoded_frames, list):
-                decoded_segments = []
-                for i, frame in enumerate(encoded_frames):
-                    segment_samples = self.audio_tokenizer.decode(frame)
-                    decoded_segments.append(segment_samples[0])  # Assume batch_size=1
-                # Concatenate all audio segments
-                samples = torch.cat(decoded_segments, dim=-1).cpu()
-            else:
-                if task_key == "cont":
-                    # concat the audio prompt and the generated audio
-                    encoded_frames = torch.cat([audio_prompt, encoded_frames], dim=1)
-                samples = self.audio_tokenizer.decode(
-                    encoded_frames
-                ) # [1, 1, T]
-                samples = samples[0].cpu() # [1, T]
+            if not isinstance(encoded_frames, list) and task_key == "cont":
+                encoded_frames = torch.cat([audio_prompt, encoded_frames], dim=1)
+            samples = self.audio_tokenizer.decode(encoded_frames)
+            samples = samples[0].cpu()  # [1, T]
 
         except Exception as e:
             import traceback
@@ -137,4 +125,3 @@ class MelleModel(nn.Module):
             return None, audio_recon, 16_000, 0
 
         return samples, audio_recon, 16_000, np.mean(std)
-                
